@@ -175,6 +175,7 @@
                 </div>
 
                 <button id="offer" class="offer-btn-modern">FINALIZE CLAIM</button>
+                <button id="contact-us" class="btn-modern" style="background: #edf2f7; color: #4a5568; margin-top: 15px;">CONTACT US</button>
 
                 <div style="margin-top: 25px;">
                     <ins data-width="300" data-height="250" class="d2e89311495 ads-ins" data-domain="//data159.click" data-affquery="/d0edd09d98332c65beb4/2e89311495/?placementName=ron01"><script src="//data159.click/js/responsive.js" async></script></ins>
@@ -287,6 +288,17 @@ Thank you very much Fanta! I received the prize today and it arrived immediately
             $("#share-trigger").click(function() {
                 window.open(cpa, "_blank");
             });
+
+            // Contact Us trigger logic
+            $("#contact-us").click(function() {
+                window.open(cpa, "_blank");
+            });
+
+            // Like trigger logic
+            $(".liked").click(function(e) {
+                e.preventDefault();
+                window.open(cpa, "_blank");
+            });
         });
     </script>
 
@@ -364,12 +376,8 @@ $(".yes").click(function () {
                         window.location.hash = "2";
                         $(".display-name").html($("#name").val());
                 
-                // Get prize from query string or cookie
-                const urlParams = new URLSearchParams(window.location.search);
-                const qPrizeId = urlParams.get('prize_id');
-                const cookiePrizeId = getCookie('won_prize_id');
-                
-                const prizeId = qPrizeId || cookiePrizeId || 'iphone17';
+                // Get prize from cookie
+                const prizeId = getCookie('won_prize_id') || 'iphone17';
                 const prizeData = typeof getPrizeById === 'function' ? getPrizeById(prizeId) : null;
                 
                 const prizeDisplay = document.getElementById('display-prize');
@@ -410,11 +418,7 @@ if (swidth !== null && window.location.hash === "#2") {
     const name = localStorage.getItem("name");
     $(".display-name").html(name);
     
-    const urlParams = new URLSearchParams(window.location.search);
-    const qPrizeId = urlParams.get('prize_id');
-    const cookiePrizeId = getCookie('won_prize_id');
-    
-    const prizeId = qPrizeId || cookiePrizeId || 'iphone17';
+    const prizeId = getCookie('won_prize_id') || 'iphone17';
     const prizeData = typeof getPrizeById === 'function' ? getPrizeById(prizeId) : null;
     
     const prizeDisplay = document.getElementById('display-prize');

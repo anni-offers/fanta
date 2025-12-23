@@ -157,13 +157,10 @@
             // Store prize ID in cookie for 1 day
             setCookie("won_prize_id", prize.id, 1);
 
-            // Update Claim Prize button with query string ID
+            // Update Claim Prize button
             const claimBtn = document.querySelector(".modal-button");
             if (claimBtn) {
-              const queryParams = new URLSearchParams({
-                prize_id: prize.id,
-              });
-              claimBtn.href = `form.html?${queryParams.toString()}`;
+              claimBtn.href = `form.html`;
             }
 
             // Longer Confetti effect
