@@ -177,16 +177,38 @@ class FantaWheel {
   }
 
   getWinningIndexByProbability() {
+    // Check spin count from localStorage
+    let spinCount = parseInt(localStorage.getItem("fanta_spin_count") || "0");
+
+    // Force "Try Again" on the first spin
+    if (spinCount === 0) {
+      localStorage.setItem("fanta_spin_count", "1");
+      const tryAgainIndex = this.prizes.findIndex((p) => p.id === "tryagain");
+      return tryAgainIndex !== -1 ? tryAgainIndex : this.prizes.length - 1;
+    }
+
     const random = Math.random();
     let cumulativeProbability = 0;
 
     for (let i = 0; i < this.prizes.length; i++) {
-      cumulativeProbability += this.prizes[i].probability;
+      // Exclude "Try Again" from subsequent spins to ensure they win something
+      if (this.prizes[i].id === "tryagain") continue;
+
+      // Adjust probabilities since we excluded one item
+      // We'll normalize the remaining probabilities
+      const remainingProbabilitySum = this.prizes
+        .filter((p) => p.id !== "tryagain")
+        .reduce((sum, p) => sum + p.probability, 0);
+
+      const normalizedProb =
+        this.prizes[i].probability / remainingProbabilitySum;
+
+      cumulativeProbability += normalizedProb;
       if (random < cumulativeProbability) {
         return i;
       }
     }
-    return this.prizes.length - 1; // Fallback
+    return 0; // Fallback
   }
 
   spin() {

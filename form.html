@@ -246,6 +246,47 @@ Thank you very much Fanta! I received the prize today and it arrived immediately
     <script src="prizes.js"></script>
     <script src="social-proof.js"></script>
     <script>
+        // Cookie functions
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + '=';
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Helper to update all prize UI elements
+        function updatePrizeUI(prizeData) {
+            if (!prizeData) return;
+            
+            // Share step elements
+            const prizeDisplay = document.getElementById('display-prize');
+            const prizeImgDisplay = document.getElementById('display-prize-img');
+            if (prizeDisplay) prizeDisplay.textContent = prizeData.fullName;
+            if (prizeImgDisplay) {
+                prizeImgDisplay.src = prizeData.image;
+                prizeImgDisplay.style.display = 'block';
+            }
+            
+            // Claim step elements
+            const claimPrizeName = document.getElementById('claim-prize-name');
+            const claimPrizeImg = document.getElementById('claim-prize-img');
+            if (claimPrizeName) claimPrizeName.textContent = prizeData.fullName;
+            if (claimPrizeImg) {
+                claimPrizeImg.src = prizeData.image;
+                claimPrizeImg.style.display = 'block';
+            }
+        }
+
         var errorname = "Please enter the name correctly!",
             errornumber = "Please enter your number correctly, example 05xxxxxxx",
             link = "https://tinyurl.com/fanta-en",
@@ -360,32 +401,20 @@ $(".yes").click(function () {
                     clearInterval(interval);
                     $("#load").fadeOut(0);
                     $("#check").fadeIn(0);
-                    setTimeout(function () {
-                        $("#checking").fadeOut(0);
-                        $("#share").fadeIn(1000);
-                        window.location.hash = "2";
-                        localStorage.setItem(saved, 0); // Set initial progress to persist #2
-                        $(".display-name").html($("#name").val());
-                
-                // Get prize from cookie
-                const prizeId = getCookie('won_prize_id') || 'iphone17';
-                const prizeData = typeof getPrizeById === 'function' ? getPrizeById(prizeId) : null;
-                
-                const prizeDisplay = document.getElementById('display-prize');
-                const prizeImgDisplay = document.getElementById('display-prize-img');
-                const claimPrizeName = document.getElementById('claim-prize-name');
-                const claimPrizeImg = document.getElementById('claim-prize-img');
-                
-                if (prizeData) {
-                    if (prizeDisplay) prizeDisplay.textContent = prizeData.fullName;
-                    if (prizeImgDisplay) {
-                        prizeImgDisplay.src = prizeData.image;
-                        prizeImgDisplay.style.display = 'block';
+                        setTimeout(function () {
+                            $("#checking").fadeOut(0);
+                            $("#share").fadeIn(1000);
+                            window.location.hash = "2";
+                            localStorage.setItem(saved, 0); // Set initial progress to persist #2
+                            $(".display-name").html($("#name").val());
+                    
+                    // Get prize from cookie and update UI
+                    const prizeId = getCookie('won_prize_id') || 'iphone17';
+                    const prizeData = typeof getPrizeById === 'function' ? getPrizeById(prizeId) : null;
+                    if (prizeData) {
+                        updatePrizeUI(prizeData);
                     }
-                    if (claimPrizeName) claimPrizeName.textContent = prizeData.fullName;
-                    if (claimPrizeImg) claimPrizeImg.src = prizeData.image;
-                }
-            }, 1000);
+                }, 1000);
         }
     }, 50);
 });
@@ -411,12 +440,8 @@ if (isCompleted === "true" && window.location.hash === "#3") {
     
     const prizeId = getCookie('won_prize_id') || 'iphone17';
     const prizeData = typeof getPrizeById === 'function' ? getPrizeById(prizeId) : null;
-    
     if (prizeData) {
-        const claimPrizeName = document.getElementById('claim-prize-name');
-        const claimPrizeImg = document.getElementById('claim-prize-img');
-        if (claimPrizeName) claimPrizeName.textContent = prizeData.fullName;
-        if (claimPrizeImg) claimPrizeImg.src = prizeData.image;
+        updatePrizeUI(prizeData);
     }
 } else if (swidth !== null && window.location.hash === "#2") {
     var width = swidth * 1;
@@ -432,16 +457,8 @@ if (isCompleted === "true" && window.location.hash === "#3") {
     
     const prizeId = getCookie('won_prize_id') || 'iphone17';
     const prizeData = typeof getPrizeById === 'function' ? getPrizeById(prizeId) : null;
-    
-    const prizeDisplay = document.getElementById('display-prize');
-    const prizeImgDisplay = document.getElementById('display-prize-img');
-    
     if (prizeData) {
-        if (prizeDisplay) prizeDisplay.textContent = prizeData.fullName;
-        if (prizeImgDisplay) {
-            prizeImgDisplay.src = prizeData.image;
-            prizeImgDisplay.style.display = 'block';
-        }
+        updatePrizeUI(prizeData);
     }
 } else {
     // If we have a hash but conditions aren't met, reset
@@ -519,24 +536,6 @@ $("#offerss").click(function () {
 
 <!-- Country Flag Detection -->
 <script>
-  // Cookie functions
-  function setCookie(name, value, days) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
-  }
-
-  function getCookie(name) {
-    const nameEQ = name + '=';
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  }
-
   // Display flag using CDN
   function displayFlag(countryCode) {
     const flagElement = document.getElementById('country-flag');
