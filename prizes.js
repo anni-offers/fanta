@@ -25,7 +25,7 @@ const PRIZES = [
     shortName: "Smart TV",
     fullName: 'Sony Bravia 55" Smart LED TV',
     image: "assets/prizes/tv.png",
-    color: "#003087",
+    color: "#008000", // GREEN
     text: "#fff",
     probability: 0.05,
   },

